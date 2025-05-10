@@ -26,7 +26,10 @@ const TaskColumn = ({
           onDelete={() => onDelete(columnKey, index)}
           onMove={onMove}
           columnKey={columnKey}
-          onDragStart={(e) => onDragStart(e, task.id)}  // Start dragging
+          onDragStart={(e) => {
+            e.dataTransfer.setData('taskId', task.id);
+            e.dataTransfer.setData('fromColumn', columnKey);
+          }}  
         />
       ))}
       {columnKey === 'To Do' && (
@@ -45,47 +48,34 @@ const TaskBoard = ({ columns, setColumns, addTask, deleteTask, moveTask }) => {
 
   const handleDrop = (e, toColumn) => {
     e.preventDefault();
-    e.stopPropagation();
+    const taskId = Number(e.dataTransfer.getData('taskId'));
+    const fromColumn = e.dataTransfer.getData('fromColumn');
   
-    const taskId = e.dataTransfer.getData('taskId');  // Get the task ID
+    if (!taskId || !fromColumn || fromColumn === toColumn) return;
   
-    console.log("Dropping task with ID:", taskId, "into column:", toColumn);
-    handleMove(taskId, toColumn);  // Move the task to the new column
+    handleMove(taskId, fromColumn, toColumn);
   };
   
-  
-
-  const handleMove = (taskId, toColumn) => {
-    const allColumns = { ...columns };
-    let taskToMove;
-    let fromColumn;
-    let taskIndex;
-  
-    // Find the task and the column from which it's being moved
-    for (let columnKey in allColumns) {
-      taskIndex = allColumns[columnKey].findIndex((task) => task.id === taskId);
-      if (taskIndex !== -1) {
-        taskToMove = allColumns[columnKey][taskIndex];
-        fromColumn = columnKey;
-        break;
-      }
+  const handleMove = (taskId, fromColumn, toColumn) => {
+    if (!columns[fromColumn] || !columns[toColumn]) {
+      console.error('Invalid fromColumn or toColumn:', fromColumn, toColumn);
+      return;
     }
   
-    // Remove the task from the original column
-    const updatedFromColumn = allColumns[fromColumn].filter(
-      (task) => task.id !== taskId
-    );
+    const taskToMove = columns[fromColumn].find(task => task.id === taskId);
+    if (!taskToMove) return;
   
-    // Add the task to the new column
-    const updatedToColumn = [...allColumns[toColumn], taskToMove];
+    const updatedFrom = columns[fromColumn].filter(task => task.id !== taskId);
+    const updatedTo = [...columns[toColumn], taskToMove];
   
-    // Update the columns state
     setColumns({
-      ...allColumns,
-      [fromColumn]: updatedFromColumn,
-      [toColumn]: updatedToColumn,
+      ...columns,
+      [fromColumn]: updatedFrom,
+      [toColumn]: updatedTo,
     });
   };
+  
+  
   
 
   return (

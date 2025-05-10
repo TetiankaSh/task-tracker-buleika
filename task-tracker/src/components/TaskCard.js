@@ -23,7 +23,10 @@ const TaskCard = ({ task, onDelete, onDragStart, columnKey, onMove }) => {
     <div
       className="task-card"
       draggable
-      onDragStart={(e) => onDragStart(e, task.id)}  // Pass task.id to handleDragStart
+      onDragStart={(e) => {
+        e.dataTransfer.setData('taskId', task.id);
+        e.dataTransfer.setData('fromColumn', columnKey);
+      }}  
     >
       {isEditing ? (
         <>
