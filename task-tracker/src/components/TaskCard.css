@@ -10,11 +10,15 @@
     border-radius: 5px;
     background-color: #fffef7;
     position: relative;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     cursor: move;
-    min-height: 120px;
     z-index: 1;
     box-sizing: border-box;
     padding-bottom: 40px;
+    min-height: 150px;
   }
   
   .task-card::before {
@@ -45,16 +49,21 @@
     pointer-events: none;
   }
 
-
+  .card-content {
+    flex-grow: 1;
+    margin-bottom: 1rem; /* Ensures space between text and buttons */
+}
 
   .task-actions {
     position: absolute;
     bottom: 6px;
     right: 6px;
+    bottom: 10px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
-    gap: 6px;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
     z-index: 2;
   }
   
@@ -100,4 +109,12 @@
 
 .task-card textarea {
   height: 80px;
-}           
+}      
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+

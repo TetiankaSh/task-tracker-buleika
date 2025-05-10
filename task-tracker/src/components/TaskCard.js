@@ -2,66 +2,79 @@ import React, { useState } from 'react';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import './TaskCard.css';
 
-const TaskCard = ({ task, onDelete, onDragStart, columnKey, onMove }) => {
+
+const TaskCard = ({ task, onDelete, onDragStart, columnKey, onMove, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTask, setEditedTask] = useState({
-    title: task?.title || '',  // Using optional chaining
-    description: task?.description || '',  // Using optional chaining
-  });
+  const [editedTitle, setEditedTitle] = useState(task.title || '');
+  const [editedDescription, setEditedDescription] = useState(task.description || '');
 
-  if (!task) return null;
-
-  const toggleEdit = () => {
-    if (isEditing) {
-      task.title = editedTask.title;
-      task.description = editedTask.description;
-    }
-    setIsEditing(!isEditing);
+  const handleSave = () => {
+    // if (typeof onUpdate !== 'function') {
+    //   alert('onUpdate is NOT a function!');
+    //   return;
+    // } else {
+    //   alert('onUpdate IS a function');
+    // }
+    const updatedTask = {
+      ...task,
+      title: editedTitle || 'Untitled Task',
+      description: editedDescription || 'No description provided.',
+    };
+  
+    onUpdate(task.id, updatedTask.title, updatedTask.description);
+  
+    setIsEditing(false);
   };
+  
+
+  const handleCancel = () => {
+    setEditedTitle(task.title || '');
+    setEditedDescription(task.description || '');
+    setIsEditing(false);
+  };
+
+  
+
 
   return (
     <div
       className="task-card"
       draggable
-      onDragStart={(e) => {
-        e.dataTransfer.setData('taskId', task.id);
-        e.dataTransfer.setData('fromColumn', columnKey);
-      }}  
+      onDragStart={(e) => onDragStart(e, task.id)}
     >
       {isEditing ? (
-        <>
+        <div className="edit-form">
           <input
-            className="task-input"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
             placeholder="Title"
-            value={editedTask.title}
-            onChange={(e) =>
-              setEditedTask({ ...editedTask, title: e.target.value })
-            }
           />
           <textarea
-            className="task-input"
+            value={editedDescription}
+            onChange={(e) => setEditedDescription(e.target.value)}
             placeholder="Description"
-            value={editedTask.description}
-            onChange={(e) =>
-              setEditedTask({ ...editedTask, description: e.target.value })
-            }
           />
-        </>
+          <div className="button-group">
+            <button onClick={handleSave}>Save</button>
+            <button onClick={handleCancel}>Cancel</button>
+          </div>
+        </div>
       ) : (
         <>
-          <h3>{task?.title || 'Untitled Task'}</h3>  {/* Safe rendering of title */}
-          <p>{task?.description || 'No description provided.'}</p>  {/* Safe rendering of description */}
+          <div className="card-content">
+            <h3>{task.title || 'Untitled Task'}</h3>
+            <p>{task.description || 'No description provided.'}</p>
+          </div>
+          <div className="task-actions">
+            <button onClick={() => setIsEditing(true)}>
+              <FaEdit />
+            </button>
+            <button onClick={() => onDelete(task.id, columnKey)}>
+              <FaTrash />
+            </button>
+          </div>
         </>
       )}
-
-      <div className="task-actions">
-        <button className="pencil-wrapper" onClick={toggleEdit}>
-          <FaEdit />
-        </button>
-        <button className="pencil-wrapper" onClick={onDelete}>
-          <FaTrash />
-        </button>
-      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import TaskCard from './TaskCard';
 
 // TaskColumn.js
-const TaskColumn = ({ columnKey, title, tasks, onDrop, onDragStart, onDelete, onMove }) => {
+const TaskColumn = ({ columnKey, title, tasks, onDrop, onDragStart, onDelete, onMove, onUpdate, handleUpdate }) => {
     const handleDragOver = (e) => {
       e.preventDefault();  // This allows the drop to occur
     };
@@ -21,7 +21,8 @@ const TaskColumn = ({ columnKey, title, tasks, onDrop, onDragStart, onDelete, on
             onDelete={onDelete}
             onMove={onMove}
             columnKey={columnKey}
-            onDragStart={onDragStart}  // Pass handleDragStart as prop
+            onDragStart={onDragStart}  
+            onUpdate={onUpdate}
           />
         ))}
       </div>

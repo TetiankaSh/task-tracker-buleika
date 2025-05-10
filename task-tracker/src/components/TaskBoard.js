@@ -11,6 +11,8 @@ const TaskColumn = ({
   onDelete,
   onMove,
   onAddTask,
+  onUpdate,
+  handleUpdate,
 }) => {
   return (
     <div
@@ -26,6 +28,7 @@ const TaskColumn = ({
           onDelete={() => onDelete(columnKey, index)}
           onMove={onMove}
           columnKey={columnKey}
+          onUpdate={onUpdate}
           onDragStart={(e) => {
             e.dataTransfer.setData('taskId', task.id);
             e.dataTransfer.setData('fromColumn', columnKey);
@@ -41,7 +44,7 @@ const TaskColumn = ({
   );
 };
 
-const TaskBoard = ({ columns, setColumns, addTask, deleteTask, moveTask }) => {
+const TaskBoard = ({ columns, setColumns, addTask, deleteTask, moveTask, handleSave }) => {
   const handleDragStart = (e, taskId) => {
     e.dataTransfer.setData('taskId', taskId);  // Store task ID for later use
   };
@@ -75,6 +78,26 @@ const TaskBoard = ({ columns, setColumns, addTask, deleteTask, moveTask }) => {
     });
   };
   
+  const handleUpdate = (taskId, newTitle, newDescription) => {
+    const newColumns = { ...columns };
+    
+  
+    Object.keys(newColumns).forEach((colKey) => {
+      newColumns[colKey] = newColumns[colKey].map((task) => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            title: newTitle,
+            description: newDescription,
+          };
+        }
+        return task;
+      });
+    });
+  
+    setColumns(newColumns);
+  };
+  
   
   
 
@@ -92,6 +115,7 @@ const TaskBoard = ({ columns, setColumns, addTask, deleteTask, moveTask }) => {
           onDelete={deleteTask}
           onMove={moveTask}
           onAddTask={addTask}
+          onUpdate={handleUpdate}
         />
       ))}
     </div>

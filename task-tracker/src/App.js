@@ -14,12 +14,16 @@ function App() {
 
   // Add a task to the 'To Do' column with a default title and description
   const addTask = () => {
-    const newTask = { id: Date.now(), title: 'New Task', description: 'Task Description' };
-    setColumns((prev) => ({
+    const newTask = { id: Date.now(), title: '', description: '' };  // Use the current timestamp as a unique ID
+    setColumns(prev => ({
       ...prev,
       'To Do': [...prev['To Do'], newTask],
     }));
   };
+  
+  
+  
+  
 
   // Delete a task by index
   const deleteTask = (columnKey, index) => {
@@ -49,6 +53,12 @@ function App() {
     }));
   };
 
+  const loadBoard = () => {
+    // TODO: Add logic to load a board by ID
+    console.log("Load board clicked! (placeholder)");
+  };
+  
+
   return (
     <div className="App">
       <h1>Buleika's Task Tracker</h1>
@@ -65,7 +75,7 @@ function App() {
         </div>
 
         <div className="pencil-wrapper-square button-wrapper">
-          <button onClick={addTask}>Load</button>
+          <button onClick={loadBoard}>Load</button>
         </div>
       </div>
 
@@ -77,6 +87,7 @@ function App() {
           addTask={addTask}
           deleteTask={deleteTask}
           moveTask={moveTask}
+         
         />
       </div>
     </div>
