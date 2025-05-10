@@ -44,6 +44,22 @@ function App() {
               ))}
             </ul>
           </div>
+
+          <div className="task-columns">
+            <div className="task-column-wrapper">
+              <div className="column-title">To Do</div>
+              <div className="task-column"> {/* tasks go here */} </div>
+            </div>
+            <div className="task-column-wrapper">
+              <div className="column-title">In Progress</div>
+              <div className="task-column"> {/* tasks go here */} </div>
+            </div>
+            <div className="task-column-wrapper">
+              <div className="column-title">Done</div>
+              <div className="task-column"> {/* tasks go here */} </div>
+            </div>
+          </div>
+
       </div>
 
   )
